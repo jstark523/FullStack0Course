@@ -1,5 +1,19 @@
 import { useState } from 'react'
 
+const Button = ({text, handleClick}) =>{
+  return (
+    <button onClick={handleClick}>{text}</button>
+  )
+}
+
+const StatisticLine = (props) =>{
+  return(
+    <>
+    <p>{props.text} {props.value} {props.endl}</p>
+    </>
+  )
+}
+
 const Statistics = ({good, bad, neutral}) => {
   if(good + neutral + bad === 0){
     return (
@@ -12,12 +26,12 @@ const Statistics = ({good, bad, neutral}) => {
     return (
       <>
       <h1>statistics</h1>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>all {bad + good + neutral}</p>
-      <p>average {(bad + good + neutral)/3}</p>
-      <p>positive {good/(neutral + bad + good)} %</p>
+      <StatisticLine text = "good" value = {good} endl = ""></StatisticLine>
+      <StatisticLine text = "neutral" value = {neutral} endl = ""></StatisticLine>
+      <StatisticLine text = "bad" value = {bad} endl = ""></StatisticLine>
+      <StatisticLine text = "all" value = {bad + good + neutral} endl = ""></StatisticLine>
+      <StatisticLine text = "average" value = {(bad + good + neutral)/3} endl = ""></StatisticLine>
+      <StatisticLine text = "positive" value = {(good/(neutral + bad + good)) * 100} endl = "%"></StatisticLine>
       </>
     )
 
@@ -29,10 +43,15 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
+  const goodClick = () => setGood(good + 1)
+  const badClick = () => setBad(bad + 1)
+  const neutralClick = () => setNeutral(neutral + 1)
+
+
   return (
     <div>
       <h1>give feedback</h1>
-      <button onClick={() => setGood(good + 1)}>Good</button><button onClick={() => setNeutral(neutral + 1)}>Neutral</button><button onClick={() => setBad(bad + 1)}>Bad</button>
+      <Button text = "good" handleClick={goodClick}></Button><Button text = "neutral" handleClick={neutralClick}></Button><Button text = "bad" handleClick={badClick}></Button>
       <Statistics good = {good} bad = {bad} neutral = {neutral}></Statistics>
     </div>
   )
