@@ -1,7 +1,7 @@
 const Header = ({course}) => <h1>{course}</h1>
 
 const Total = ({parts}) => {
-  var sum = parts.reduce(function(total, curPart){
+  var sum = parts.reduce((total, curPart) => {
     return total + curPart.exercises
   },0)
 
