@@ -18,4 +18,12 @@ const deletePerson = (id) => {
     });
 }
 
-export { addPerson, deletePerson };
+const updateNumber = (person) => {
+  axios
+    .put(`${baseUrl}/${person.id}`, person)
+    .then(response =>{
+      console.log(response.data);
+    });
+}
+
+export { addPerson, deletePerson, updateNumber };

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { addPerson, deletePerson } from './ApiService'
+import { addPerson, deletePerson, updateNumber } from './ApiService'
 
 const Filter = (props) =>{
   return (
@@ -17,6 +17,13 @@ const deleteFunc = (id, persons, setPersons) =>{
     setPersons(otherPeople);
     deletePerson(id);
   }
+}
+
+const updateFunc = (toUpdate, persons, setPersons, newNumber) =>{
+  const updated = {...toUpdate, number: newNumber};
+  const newPeople = persons.map(person => person.id === toUpdate.id ? updated : person);
+  setPersons(newPeople);
+  updateNumber(updated);
 }
 
 const PersonForm =(props) =>{
@@ -81,8 +88,10 @@ const App = () => {
     event.preventDefault()
     const findName = persons.find(person => person.name === newName)
     const findNumber = persons.find(person => person.number === newNumber)
-    if(findName){
-      window.alert(`${newName} is already added to phonebook`)
+    if(findName && newNumber !== ''){
+      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
+        updateFunc(findName, persons, setPersons, newNumber);
+      }
     }
     else if(findNumber){
       window.alert(`${newNumber} is already added to phonebook`)
