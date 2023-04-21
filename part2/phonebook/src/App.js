@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { addPerson } from './ApiService'
 
 
 const Filter = (props) =>{
@@ -87,6 +88,7 @@ const App = () => {
     else{
       const newPerson = {name: newName, number: newNumber}
       setPersons(persons.concat(newPerson))
+      addPerson(newPerson);
     }
     const blank = ''
     setNewName(blank)
