@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { addPerson } from './ApiService'
-
+import { addPerson, deletePerson } from './ApiService'
 
 const Filter = (props) =>{
   return (
@@ -9,6 +8,15 @@ const Filter = (props) =>{
     filter by name: <input value={props.filter} onChange={props.handleFilterChange}/>
     </div>
   )
+}
+
+const deleteFunc = (id, persons, setPersons) =>{
+  const toDelete = persons.find(person => person.id === id);
+  if(window.confirm(`Are you sure you want to delete ${toDelete.name}?`)){
+    const otherPeople = persons.filter(person => person.id !== id);
+    setPersons(otherPeople);
+    deletePerson(id);
+  }
 }
 
 const PersonForm =(props) =>{
@@ -26,12 +34,12 @@ const PersonForm =(props) =>{
   )
 }
 
-const PeopleView = ({filter, persons}) =>{
+const PeopleView = ({filter, persons, setPersons}) =>{
   if(filter === ''){
     return (
       <>
         {persons.map(person =>(
-          <p>{person.name} {person.number}</p>
+          <p>{person.name} {person.number} <button onClick={() => deleteFunc(person.id, persons, setPersons)}>Delete</button></p>
         ))}
       </>
     )
@@ -114,7 +122,7 @@ const App = () => {
       <h2>add a new entry</h2>
       <PersonForm newName ={newName} newNumber = {newNumber} handlePersonChange = {handlePersonChange} handleNewPerson = {handleNewPerson} handleNumberChange = {handleNumberChange}/>
       <h2>Numbers</h2>
-      <PeopleView filter={filter} persons = {persons}/>
+      <PeopleView filter={filter} persons = {persons} setPersons={setPersons}/>
     </div>
   )
 }
