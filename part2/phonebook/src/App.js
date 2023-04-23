@@ -16,6 +16,19 @@ const Message = ({notification}) =>{
   }
 }
 
+const FailMessage = ({failNotification}) =>{
+  if (failNotification === null){
+    return null;
+  }
+  else{
+    return(
+      <div className='fail'>
+        {failNotification}
+      </div>
+    )
+  }
+}
+
 const Filter = (props) =>{
   return (
     <div>
@@ -33,7 +46,7 @@ const deleteFunc = (id, persons, setPersons) =>{
   }
 }
 
-const updateFunc = (toUpdate, persons, setPersons, newNumber, setNotification) =>{
+const updateFunc = (toUpdate, persons, setPersons, newNumber, setNotification, setFailNotification) =>{
   const updated = {...toUpdate, number: newNumber};
   const newPeople = persons.map(person => person.id === toUpdate.id ? updated : person);
   setPersons(newPeople);
@@ -41,6 +54,10 @@ const updateFunc = (toUpdate, persons, setPersons, newNumber, setNotification) =
   .then(response => {
     setNotification(`Updated ${toUpdate.name}`)
     setTimeout(() => {setNotification(null)}, 5000)
+  })
+  .catch(error =>{
+    setFailNotification(`Information of ${toUpdate.name} has already been removed from the server`)
+    setTimeout(() => {setFailNotification(null)}, 5000)
   });
 }
 
@@ -93,6 +110,9 @@ const App = () => {
 
   const[notification, setNotification] = useState(null)
 
+  const[failNotification, setFailNotification] = useState(null)
+
+
   useEffect(() =>{
     console.log('effect');
     axios
@@ -110,7 +130,7 @@ const App = () => {
     const findNumber = persons.find(person => person.number === newNumber)
     if(findName && newNumber !== ''){
       if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
-        updateFunc(findName, persons, setPersons, newNumber, setNotification);
+        updateFunc(findName, persons, setPersons, newNumber, setNotification, setFailNotification);
       }
     }
     else if(findNumber){
@@ -152,6 +172,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Message notification={notification}/>
+      <FailMessage failNotification={failNotification} />
       <Filter filter = {filter} handleFilterChange = {handleFilterChange}/>
       <h2>add a new entry</h2>
       <PersonForm newName ={newName} newNumber = {newNumber} handlePersonChange = {handlePersonChange} handleNewPerson = {handleNewPerson} handleNumberChange = {handleNumberChange}/>
