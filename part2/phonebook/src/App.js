@@ -1,6 +1,20 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { addPerson, deletePerson, updateNumber } from './ApiService'
+import "./App.css"
+
+const Message = ({notification}) =>{
+  if (notification === null){
+    return null;
+  }
+  else{
+    return(
+      <div className='success'>
+        {notification}
+      </div>
+    )
+  }
+}
 
 const Filter = (props) =>{
   return (
@@ -19,11 +33,15 @@ const deleteFunc = (id, persons, setPersons) =>{
   }
 }
 
-const updateFunc = (toUpdate, persons, setPersons, newNumber) =>{
+const updateFunc = (toUpdate, persons, setPersons, newNumber, setNotification) =>{
   const updated = {...toUpdate, number: newNumber};
   const newPeople = persons.map(person => person.id === toUpdate.id ? updated : person);
   setPersons(newPeople);
-  updateNumber(updated);
+  updateNumber(updated)
+  .then(response => {
+    setNotification(`Updated ${toUpdate.name}`)
+    setTimeout(() => {setNotification(null)}, 5000)
+  });
 }
 
 const PersonForm =(props) =>{
@@ -73,6 +91,8 @@ const App = () => {
 
   const [filter, setFilter] = useState('')
 
+  const[notification, setNotification] = useState(null)
+
   useEffect(() =>{
     console.log('effect');
     axios
@@ -90,7 +110,7 @@ const App = () => {
     const findNumber = persons.find(person => person.number === newNumber)
     if(findName && newNumber !== ''){
       if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
-        updateFunc(findName, persons, setPersons, newNumber);
+        updateFunc(findName, persons, setPersons, newNumber, setNotification);
       }
     }
     else if(findNumber){
@@ -105,7 +125,11 @@ const App = () => {
     else{
       const newPerson = {name: newName, number: newNumber}
       setPersons(persons.concat(newPerson))
-      addPerson(newPerson);
+      addPerson(newPerson)
+      .then(response => {
+        setNotification(`Added ${newPerson.name}`)
+        setTimeout(() => {setNotification(null)}, 5000)
+      });
     }
     const blank = ''
     setNewName(blank)
@@ -127,6 +151,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Message notification={notification}/>
       <Filter filter = {filter} handleFilterChange = {handleFilterChange}/>
       <h2>add a new entry</h2>
       <PersonForm newName ={newName} newNumber = {newNumber} handlePersonChange = {handlePersonChange} handleNewPerson = {handleNewPerson} handleNumberChange = {handleNumberChange}/>

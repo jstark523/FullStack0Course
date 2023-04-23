@@ -3,27 +3,15 @@ import axios from 'axios'
 const baseUrl = "http://localhost:3001/persons";
 
 const addPerson = (person) => {
-  axios
-    .post(baseUrl, person)
-    .then(response =>{
-      console.log(response.data);
-    });
+  return axios.post(baseUrl, person);
 }
 
 const deletePerson = (id) => {
-  axios
-    .delete(`${baseUrl}/${id}`)
-    .then(response =>{
-      console.log(response.data);
-    });
+  return axios.delete(`${baseUrl}/${id}`);
 }
 
 const updateNumber = (person) => {
-  axios
-    .put(`${baseUrl}/${person.id}`, person)
-    .then(response =>{
-      console.log(response.data);
-    });
+  return axios.put(`${baseUrl}/${person.id}`, person);
 }
 
 export { addPerson, deletePerson, updateNumber };
