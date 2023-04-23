@@ -1,7 +1,7 @@
 import { useEffect, useState} from 'react'
 import axios from 'axios'
 
-const Result = ({result}) =>{
+const Result = ({result, setResult}) =>{
   if(result !== null){
     if(result.length === 1){
       const languages = Object.values(result[0].languages);
@@ -28,7 +28,7 @@ const Result = ({result}) =>{
       return (
         <div>
           {result.map((country) => 
-            <p>{country.name.common}</p>
+            <p>{country.name.common}<button onClick={() => setResult([country])}>show</button></p>
           )}
         </div>
       );
@@ -71,7 +71,7 @@ function App() {
       <p>
       find countries<input onChange={handleSearchChange}></input>
       </p>
-      <Result result = {result}/>
+      <Result result = {result} setResult = {setResult}/>
     </div>
   );
 }
